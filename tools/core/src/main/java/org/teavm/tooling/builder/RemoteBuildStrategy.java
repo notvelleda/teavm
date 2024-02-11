@@ -214,6 +214,11 @@ public class RemoteBuildStrategy implements BuildStrategy {
     }
 
     @Override
+    public void setWasiReactor(boolean wasiReactor) {
+        request.wasiReactor = wasiReactor;
+    }
+
+    @Override
     public BuildResult build() throws BuildException {
         RemoteBuildResponse response;
         try {

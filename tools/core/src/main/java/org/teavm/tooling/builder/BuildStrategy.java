@@ -91,5 +91,7 @@ public interface BuildStrategy {
 
     void setAssertionsRemoved(boolean assertionsRemoved);
 
+    void setWasiReactor(boolean wasiReactor);
+
     BuildResult build() throws BuildException;
 }

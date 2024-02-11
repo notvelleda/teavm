@@ -115,6 +115,7 @@ public class TeaVMTool {
     private boolean heapDump;
     private boolean shortFileNames;
     private boolean assertionsRemoved;
+    private boolean wasiReactor = false;
 
     public File getTargetDirectory() {
         return targetDirectory;
@@ -319,6 +320,14 @@ public class TeaVMTool {
         return InstructionLocationReader.extractUsedResources(vm);
     }
 
+    public boolean isWasiReactor() {
+    	return this.wasiReactor;
+    }
+
+    public void setWasiReactor(boolean wasiReactor) {
+    	this.wasiReactor = wasiReactor;
+    }
+
     public void addSourceFileProvider(SourceFileProvider sourceFileProvider) {
         sourceFileProviders.add(sourceFileProvider);
     }
@@ -360,6 +369,7 @@ public class TeaVMTool {
         webAssemblyTarget.setMinHeapSize(minHeapSize);
         webAssemblyTarget.setMaxHeapSize(maxHeapSize);
         webAssemblyTarget.setObfuscated(obfuscated);
+        webAssemblyTarget.setReactor(wasiReactor);
         return webAssemblyTarget;
     }
 

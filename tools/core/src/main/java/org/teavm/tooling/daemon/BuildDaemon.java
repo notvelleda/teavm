@@ -166,6 +166,7 @@ public class BuildDaemon extends UnicastRemoteObject implements RemoteBuildServi
         tool.setHeapDump(request.heapDump);
         tool.setShortFileNames(request.shortFileNames);
         tool.setAssertionsRemoved(request.assertionsRemoved);
+        tool.setWasiReactor(request.wasiReactor);
 
         for (String sourceDirectory : request.sourceDirectories) {
             tool.addSourceFileProvider(new DirectorySourceFileProvider(new File(sourceDirectory)));

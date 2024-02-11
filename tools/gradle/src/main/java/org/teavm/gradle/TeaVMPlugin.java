@@ -197,6 +197,7 @@ public class TeaVMPlugin implements Plugin<Project> {
             task.getTargetFileName().convention(wasi.getTargetFileName());
             task.getMinHeapSize().convention(wasi.getMinHeapSize());
             task.getMaxHeapSize().convention(wasi.getMaxHeapSize());
+            task.getReactor().convention(wasi.getReactor());
         });
     }
 

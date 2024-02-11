@@ -165,6 +165,9 @@ public class TeaVMCompileMojo extends AbstractMojo {
     @Parameter(property = "teavm.assertionsRemoved", defaultValue = "false")
     private boolean assertionsRemoved;
 
+    @Parameter(property = "teavm.wasiReactor", defaultValue = "false")
+    private boolean wasiReactor;
+
     private void setupBuilder(BuildStrategy builder) throws MojoExecutionException {
         builder.setLog(new MavenTeaVMToolLog(getLog()));
         try {
@@ -304,6 +307,7 @@ public class TeaVMCompileMojo extends AbstractMojo {
             builder.setTargetType(targetType);
             builder.setWasmVersion(wasmVersion);
             builder.setHeapDump(heapDump);
+            builder.setWasiReactor(wasiReactor);
             BuildResult result;
             result = builder.build();
             TeaVMProblemRenderer.describeProblems(result.getCallGraph(), result.getProblems(), toolLog);

@@ -72,6 +72,7 @@ public class InProcessBuildStrategy implements BuildStrategy {
     private TeaVMToolLog log = new EmptyTeaVMToolLog();
     private boolean shortFileNames;
     private boolean assertionsRemoved;
+    private boolean wasiReactor;
 
     @Override
     public void init() {
@@ -241,6 +242,11 @@ public class InProcessBuildStrategy implements BuildStrategy {
     }
 
     @Override
+    public void setWasiReactor(boolean wasiReactor) {
+        this.wasiReactor = wasiReactor;
+    }
+
+    @Override
     public BuildResult build() throws BuildException {
         TeaVMTool tool = new TeaVMTool();
         tool.setProgressListener(progressListener);
@@ -273,6 +279,7 @@ public class InProcessBuildStrategy implements BuildStrategy {
         tool.setHeapDump(heapDump);
         tool.setShortFileNames(shortFileNames);
         tool.setAssertionsRemoved(assertionsRemoved);
+        tool.setWasiReactor(wasiReactor);
 
         tool.getProperties().putAll(properties);
 

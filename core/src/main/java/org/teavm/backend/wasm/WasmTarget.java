@@ -195,6 +195,7 @@ public class WasmTarget implements TeaVMTarget, TeaVMWasmHost {
     private boolean wastEmitted;
     private boolean cEmitted;
     private boolean cLineNumbersEmitted = Boolean.parseBoolean(System.getProperty("wasm.c.lineNumbers", "false"));
+    private boolean reactor;
     private ClassInitializerEliminator classInitializerEliminator;
     private ClassInitializerTransformer classInitializerTransformer;
     private ShadowStackTransformer shadowStackTransformer;
@@ -285,6 +286,14 @@ public class WasmTarget implements TeaVMTarget, TeaVMWasmHost {
 
     public void setCLineNumbersEmitted(boolean cLineNumbersEmitted) {
         this.cLineNumbersEmitted = cLineNumbersEmitted;
+    }
+
+    public boolean isReactor() {
+        return reactor;
+    }
+
+    public void setReactor(boolean reactor) {
+        this.reactor = reactor;
     }
 
     public WasmBinaryVersion getVersion() {
@@ -408,6 +417,7 @@ public class WasmTarget implements TeaVMTarget, TeaVMWasmHost {
         dependencyAnalyzer.linkMethod(new MethodReference(Fiber.class, "isResuming", boolean.class)).use();
         dependencyAnalyzer.linkMethod(new MethodReference(Fiber.class, "isSuspending", boolean.class)).use();
         dependencyAnalyzer.linkMethod(new MethodReference(Fiber.class, "current", Fiber.class)).use();
+        dependencyAnalyzer.linkMethod(new MethodReference(WasmSupport.class, "initClasses", void.class)).use();
         var withArgs = dependencyAnalyzer.linkMethod(new MethodReference(WasmSupport.class, "runWithArgs",
                 String[].class, void.class));
         withArgs.getVariable(1).propagate(dependencyAnalyzer.getType("[java/lang/String;"));
@@ -576,8 +586,12 @@ public class WasmTarget implements TeaVMTarget, TeaVMWasmHost {
         generateInitFunction(classes, initFunction, names, binaryWriter.getAddress());
         module.add(initFunction);
         module.setStartFunction(initFunction);
-        module.add(createStartFunction(names));
-        module.add(createStartCallerFunction(names));
+        if (this.reactor) {
+            module.add(createInitFunction(names));
+        } else {
+            module.add(createStartFunction(names));
+            module.add(createStartCallerFunction(names));
+        }
 
         for (String functionName : classGenerator.getFunctionTable()) {
             WasmFunction function = module.getFunctions().get(functionName);
@@ -692,6 +706,16 @@ public class WasmTarget implements TeaVMTarget, TeaVMWasmHost {
         function.setExportName("_start");
 
         var call = new WasmCall(names.forMethod(new MethodReference(WasmSupport.class, "runWithoutArgs", void.class)));
+        function.getBody().add(call);
+
+        return function;
+    }
+
+    private WasmFunction createInitFunction(NameProvider names) {
+        var function = new WasmFunction("teavm_call_init");
+        function.setExportName("_initialize");
+
+        var call = new WasmCall(names.forMethod(new MethodReference(WasmSupport.class, "initClasses", void.class)));
         function.getBody().add(call);
 
         return function;

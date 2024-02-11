@@ -91,6 +91,7 @@ class TeaVMExtensionImpl extends TeaVMBaseExtensionImpl implements TeaVMExtensio
         wasi.getOptimization().convention(property("wasi.optimization").map(OptimizationLevel::valueOf)
                 .orElse(OptimizationLevel.AGGRESSIVE));
         wasi.getTargetFileName().convention(project.provider(() -> project.getName() + ".wasm"));
+        wasi.getReactor().convention(false);
     }
 
     private void setupCDefaults() {

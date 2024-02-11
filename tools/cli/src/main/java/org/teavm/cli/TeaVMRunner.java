@@ -151,6 +151,10 @@ public final class TeaVMRunner {
                 .hasArg()
                 .desc("JavaScript module type (umd, common-js, none, es2015).")
                 .build());
+        options.addOption(Option.builder()
+                .longOpt("wasi-reactor")
+                .desc("Whether to build WASI modules as reactors instead of commands.")
+                .build());
     }
 
     private TeaVMRunner(CommandLine commandLine) {
@@ -351,6 +355,10 @@ public final class TeaVMRunner {
                 System.err.print("Wrong version value");
                 printUsage();
             }
+        }
+
+        if (commandLine.hasOption("wasi-reactor")) {
+            tool.setWasiReactor(true);
         }
     }
 

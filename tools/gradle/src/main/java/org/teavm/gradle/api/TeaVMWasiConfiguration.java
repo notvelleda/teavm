@@ -15,5 +15,8 @@
  */
 package org.teavm.gradle.api;
 
+import org.gradle.api.provider.Property;
+
 public interface TeaVMWasiConfiguration extends TeaVMWasmBaseConfiguration, TeaVMConfiguration {
+    Property<Boolean> getReactor();
 }
